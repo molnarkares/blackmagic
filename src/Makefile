@@ -1,4 +1,4 @@
-PROBE_HOST ?= native
+PROBE_HOST ?= lyorak
 PLATFORM_DIR = platforms/$(PROBE_HOST)
 VPATH += $(PLATFORM_DIR)
 

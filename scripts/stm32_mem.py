@@ -120,10 +120,10 @@ if __name__ == "__main__":
                 except:
 			print "\nErase Timed out\n"
 			break
-		stm32_write(dfudev, bin[:1024])
+		stm32_write(dfudev, bin[:2048])
 
-		bin = bin[1024:]
-		addr += 1024
+		bin = bin[2048:]
+		addr += 2048
 
 	stm32_manifest(dfudev)
 

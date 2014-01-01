@@ -34,7 +34,7 @@
 
 usbd_device *usbdev;
 /* We need a special large control buffer for this device: */
-uint8_t usbd_control_buffer[1024];
+uint8_t usbd_control_buffer[2048];
 
 static uint32_t max_address;
 
@@ -71,7 +71,7 @@ const struct usb_dfu_descriptor dfu_function = {
 	.bDescriptorType = DFU_FUNCTIONAL,
 	.bmAttributes = USB_DFU_CAN_DOWNLOAD | USB_DFU_WILL_DETACH,
 	.wDetachTimeout = 255,
-	.wTransferSize = 1024,
+	.wTransferSize = 2048,
 	.bcdDFUVersion = 0x011A,
 };
 
@@ -113,12 +113,21 @@ const struct usb_config_descriptor config = {
 
 static char serial_no[9];
 
+/*static const char *usb_strings[] = {
+	"Lyorak",
+	BOARD_IDENT_DFU,
+	"Papilot",
+	serial_no,
+	//This string is used by ST Microelectronics' DfuSe utility
+	"@Internal Flash   /0x08000000/4*002Ka,124*002Kg"
+};*/
+
 static const char *usb_strings[] = {
 	"Black Sphere Technologies",
 	BOARD_IDENT_DFU,
 	serial_no,
-	/* This string is used by ST Microelectronics' DfuSe utility */
-	DFU_IFACE_STRING,
+	// This string is used by ST Microelectronics' DfuSe utility
+	DFU_IFACE_STRING
 };
 
 static uint32_t get_le32(const void *vp)
@@ -266,8 +275,11 @@ void dfu_init(const usbd_driver *driver)
 
 void dfu_main(void)
 {
-	while (1)
+	while (1) {
+		//gpio_set(GPIOB, GPIO10);
 		usbd_poll(usbdev);
+		//gpio_clear(GPIOB, GPIO10);
+	}
 }
 
 static char *get_dev_unique_id(char *s)

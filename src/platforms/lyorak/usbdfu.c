@@ -45,22 +45,24 @@ int main(void)
 	systick_set_reload(900000);
 
 	rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPAEN);
-        rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_USBEN);
+	rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_OTGFSEN);
+	//rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_USBEN);
 	gpio_set_mode(GPIOA, GPIO_MODE_INPUT, 0, GPIO8);
 
 	systick_interrupt_enable();
 	systick_counter_enable();
 
 	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ,
-			GPIO_CNF_OUTPUT_PUSHPULL, GPIO11);
+			GPIO_CNF_OUTPUT_PUSHPULL, GPIO11|GPIO10);
 	gpio_set_mode(GPIOB, GPIO_MODE_INPUT,
-			GPIO_CNF_INPUT_FLOAT, GPIO2 | GPIO10);
+			GPIO_CNF_INPUT_FLOAT, GPIO2);
 
 	dfu_init(&stm32f107_usb_driver);
 
 	gpio_set(GPIOA, GPIO8);
 	gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_2_MHZ,
 			GPIO_CNF_OUTPUT_PUSHPULL, GPIO8);
+	gpio_set(GPIOA, GPIO8);
 
 	dfu_main();
 }
@@ -68,5 +70,6 @@ int main(void)
 void sys_tick_handler(void)
 {
 	gpio_toggle(GPIOB, GPIO11); /* LED2 on/off */
+//	gpio_toggle(GPIOB, GPIO10);
 }
 
