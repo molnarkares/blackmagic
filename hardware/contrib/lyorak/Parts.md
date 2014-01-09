@@ -1,25 +1,46 @@
-## Parts List
-
-| ID | Part Number | Description | Supplier | Order Code | Quantity
-| --- | --- | --- | --- | --- | ---
-| IC1 | STM32F103CBT6 | Microcontroller, 128Kb Flash, 20Kb SRAM, -40 to 85°C | Farnell | [1606327](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*1606327*) | 1
-| JTAG1 | 20021121-00010C4LF | 2x5 Pin Header, SMT, 1.27mm Pitch, Gold Plate | Farnell | [1865279](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*1865279*) | 1
-| N/A | FFSD-05-D-06.00-01-N | Ribbon Cable 6", Grey, 10 way, 1.27mm Pitch | Farnell | [1667659](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*1667659*) | 1
-| CN1 | 67503-1230 | USB Mini B Receptacle, SMT | Farnell | [2313554](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*2313554*) | 1
-| BTN1 | B3U-1000P-B | SPST-NO Switch, SMD | Farnell | [1333654](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*1333654*) | 2
-| Q1 | IRLML5103PBF | MOSFET, P, -30V, -0.61A, SOT-23 | Farnell | [8660085](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*8660085*) | 1
-| IC2 | TXS0108EPWR | Bidirectional Voltage Translator, 8-bit, 20TSSOP | Farnell | [1702548](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*1702548*) | 1
-| IC3 | TLV70033DCKT | LDO Regulator, 3.3V 200mA, 5SC70 | Farnell | [1815750](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*1815750*) | 1
-| Y1 | ABMM2-8.000MHZ-E2-T | Crystal, 8MHz, 18pF, 6x3.6mm | Farnell | [1611803](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*1611803*) | 1
-| R1, R2 | MC0063W0603122R | Resistor 22Ω, 0.063W, 1%, 0603 [1608 Metric] | Farnell | [9330844](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*9330844*) | 2
-| R3 | MC0063W060311K5 | Resistor 1.5KΩ, 0.063W, 1%, 0603 [1608 Metric] | Farnell | [9330607](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*9330607*) | 1
-| R4, R5, R6, R13 | MC0063W0603110K | Resistor 10KΩ, 0.063W, 1%, 0603 [1608 Metric] | Farnell | [9330399](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*9330399*) | 4
-| R7, R8 | MC0063W060314K7 | Resistor 4.7KΩ, 0.063W, 1%, 0603 [1608 Metric] | Farnell | [9331247](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*9331247*) | 2
-| R9, R10, R11, R12 | MC0063W06031390R | Resistor 390Ω, 0.063W, 1%, 0603 [1608 Metric] | Farnell | [9331131](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*9331131*) | 4
-| D1 | KPT-1608SGC | LED, Green 568nm, 0603 [1608 Metric] | Farnell | [2099223](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*2099223*) | 1
-| D2 | KPT-1608EC | LED, Red 625nm, 0603 [1608 Metric] | Farnell | [2099221](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*2099221*) | 1
-| D3, D4 | KPT-1608YC | LED, Yellow 588nm, 0603 [1608 Metric] | Farnell | [2099227](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*2099227*) | 2
-| C1, C2 | MC0603X105K100CT | Capacitor 1µF, X5R, 10V, 0603 [1608 Metric] | Farnell | [1759399](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*1759399*) | 2
-| C3, C4, C5, C6 | MC0603B104K500CT | Capacitor 100nF, X7R, 50V, 0603 [1608 Metric] | Farnell | [1759122](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*1759122*) | 4
-| C7, C8 | MC0603N180J500CT | Capacitor 18pF, C0G / NP0, 50V, 0603 [1608 Metric] | Farnell | [1759056](http://uk.farnell.com/jsp/search/browse.jsp;jsessionid=0?N=0&Ntk=partnumbers&Ntt=*1759056*) | 2
-
+Ref Name|Qty|Component|Value|Package|Order ID|
+| --- | --- | --- | --- | --- | --- |
+LED4|1|1206-LED||SML|KP-3216SGD (KIN) RoHS 1206 3.2x1.6mm GRE|
+LED2|1|1206-LED||SML|KP-3216ID (KIN) RoHS 1206 3.2x1.6mm RED|
+LED1|1|1206-LED||SML|KP-3216YD (KIN) RoHS 1206 3.2x1.6mm YEL|
+LED0|1|1206-LED||SML|KP-3216YD (KIN) RoHS 1206 3.2x1.6mm YEL|
+U6|1|66226-006||CON6_1X6_U_FCI||
+J13|1|5103309-1||con10_2X5_S4||
+Q2|1|ABM3-8||SM|ABM3-8.000MHZ-D2Y-T|
+C18|1|CAPACITOR-1206|1u|1206-CAP|CC1206KKX7R7BB105 (YAG) RoHS 1uF 10% 16V X7R|
+C13|1|CAPACITOR-1206|4u7|1206-CAP|CL31B475KAHNNNE (SAM) RoHS 4.7uF 10% 25V|
+C16|1|CAPACITOR-1206|10n|1206-CAP|CC1206KRX7R9BB104|
+C21|1|CAPACITOR-1206|18p|1206-CAP|CL31C180JBCNNNC (SAM) RoHS 18pF 5% 50V NP0|
+C20|1|CAPACITOR-1206|18p|1206-CAP|CL31C180JBCNNNC (SAM) RoHS 18pF 5% 50V NP0|
+C15|1|CAPACITOR-1206|100n|1206-CAP|CC1206KRX7R9BB104|
+C10|1|CAPACITOR-1206|100n|1206-CAP|CC1206KRX7R9BB104|
+C12|1|CAPACITOR-1206|100n|1206-CAP|CC1206KRX7R9BB104|
+C14|1|CAPACITOR-1206|100n|1206-CAP|CC1206KRX7R9BB104|
+C6|1|CAPACITOR-1206|100n|1206-CAP|CC1206KRX7R9BB104|
+C2|1|CAPACITOR-1206|100n|1206-CAP|CC1206KRX7R9BB104|
+C1|1|CAPACITOR-1206|100n|1206-CAP|CC1206KRX7R9BB104|
+J5|1|CONN_3-1|CONN_3-1|SIP1X3_100||
+U2|1|IRLML5103TRPBF||SOT-23-L|SI2307CDS-T1-GE3 (VIS) RoHS SOT-23|
+U3|1|LP5951MF-3.3||MF05A|LP5951MF-3.3|
+J3|1|MINIJTAG||SM||
+R23|1|RESISTOR-1206|1K5|1206-RES|CR-06JL7---1K5 (VIK) RoHS 1K50 5%|
+R26|1|RESISTOR-1206|4k7|1206-RES|CR-06JL7---4K7 (VIK) RoHS 4K70 5%|
+R1|1|RESISTOR-1206|4k7|1206-RES|CR-06JL7---4K7 (VIK) RoHS 4K70 5%|
+R24|1|RESISTOR-1206|10k|1206-RES|CR-06JL7---10K (VIK) RoHS 10K0 5%|
+R25|1|RESISTOR-1206|10k|1206-RES|CR-06JL7---10K (VIK) RoHS 10K0 5%|
+R27|1|RESISTOR-1206|10k|1206-RES|CR-06JL7---10K (VIK) RoHS 10K0 5%|
+R3|1|RESISTOR-1206|10k|1206-RES|CR-06JL7---10K (VIK) RoHS 10K0 5%|
+R18|1|RESISTOR-1206|22R|1206-RES|CR-06JL7---22R (VIK) RoHS 22R0 5%|
+R20|1|RESISTOR-1206|22R|1206-RES|CR-06JL7---22R (VIK) RoHS 22R0 5%|
+R6|1|RESISTOR-1206|120R|1206-RES|CR-06JL7--120R (VIK) RoHS 120R 5%|
+R15|1|RESISTOR-1206|390R|1206-RES|CR-06JL7--390R (VIK) RoHS 390R 5%|
+R12|1|RESISTOR-1206|390R|1206-RES|CR-06JL7--390R (VIK) RoHS 390R 5%|
+R14|1|RESISTOR-1206|390R|1206-RES|CR-06JL7--390R (VIK) RoHS 390R 5%|
+R13|1|RESISTOR-1206|390R|1206-RES|CR-06JL7--390R (VIK) RoHS 390R 5%|
+SW1|1|SMT2PSWITCH||Q_SIL|DTSM-32S-B|
+SW2|1|SMT2PSWITCH||Q_SIL|DTSM-32S-B|
+U4|1|SN65HV232||sm|SN65HVD232QD|
+JP1|1|SQ_JMP-0402|0/DNP|0402-SQJMP|on PCB|
+U5|1|STM32-C-64|STM32F105RCT6|LQFP64|STM32F105RCT6|
+U1|1|TXS0108EPWRG4||PW20-L|TXS0108EPWR|
+USB|1|ZX62-B-5PA|ZX62-B-5PA|ZX62-B-5PA|ZX62D-B-5PA8|
