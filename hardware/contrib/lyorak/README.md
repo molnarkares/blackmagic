@@ -7,7 +7,7 @@ and functions.
 ## The major differences
 
 Compared to the Ricahrdeoin variant:
-* PCB has been re-designed to allow assembly at home. It is a single sided PCB with 1206 passive components.
+* PCB has been re-designed to allow assembly at home. It is a single side mounted PCB with 1206 passive components.
 * Added CAN interface
 * Added 2.54mm IDC connector
 * MicroUSB intead of miniUSB
