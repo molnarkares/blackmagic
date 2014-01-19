@@ -45,7 +45,7 @@ static void usbuart_run(void);
 
 void usbuart_init(void)
 {
-#if defined(BLACKMAGIC)
+#if defined(BLACKMAGIC_MINI)
 	/* On mini hardware, UART and SWD share connector pins.
 	 * Don't enable UART if we're being debugged. */
 	if ((platform_hwversion() == 1) && (SCS_DEMCR & SCS_DEMCR_TRCENA))
@@ -165,13 +165,13 @@ void usbuart_set_line_coding(struct usb_cdc_line_coding *coding)
 
 void usbuart_usb_out_cb(usbd_device *dev, uint8_t ep)
 {
-	(void)ep;
+	//(void)ep;
 
 	char buf[CDCACM_PACKET_SIZE];
-	int len = usbd_ep_read_packet(dev, CDCACM_UART_ENDPOINT,
+	int len = usbd_ep_read_packet(dev, ep,
 					buf, CDCACM_PACKET_SIZE);
 
-#if defined(BLACKMAGIC)
+#if defined(BLACKMAGIC_MINI)
 	/* Don't bother if uart is disabled.
 	 * This will be the case on mini while we're being debugged.
 	 */

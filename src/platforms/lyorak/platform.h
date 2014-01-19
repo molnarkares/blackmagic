@@ -32,6 +32,7 @@
 
 #include "gdb_packet.h"
 
+#define BLACKMAGIC_MINI
 #define INLINE_GPIO
 #define CDCACM_PACKET_SIZE 	64
 #define PLATFORM_HAS_TRACESWO
@@ -39,10 +40,12 @@
 #define BOARD_IDENT_DFU		"Black Magic Probe (Upgrade)"
 #define DFU_IDENT               "Black Magic Firmware Upgrade"
 #define DFU_IFACE_STRING	"@Internal Flash   /0x08000000/8*002Ka,120*002Kg"
+#define PLATFORM_HAS_CAN
 
 extern usbd_device *usbdev;
 #define CDCACM_GDB_ENDPOINT	1
 #define CDCACM_UART_ENDPOINT	3
+#define CDCACM_SLCAN_ENDPOINT	6
 
 /* Important pin mappings for STM32 implementation:
  *
@@ -151,6 +154,10 @@ extern usbd_device *usbdev;
 #define TRACE_ISR   tim3_isr
 
 #define DEBUG(...)
+
+
+#define SLCAN_CAN	CAN1
+#define SLCAN_ISR	can1_
 
 extern uint8_t running_status;
 extern volatile uint32_t timeout_counter;

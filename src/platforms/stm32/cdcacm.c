@@ -39,8 +39,28 @@
 #include <traceswo.h>
 #endif
 #include <usbuart.h>
+#if defined(PLATFORM_HAS_CAN)
+#include "slcan.h"
+#endif
 
 #define DFU_IF_NO 4
+
+#if defined(PLATFORM_HAS_CAN)
+#if defined(PLATFORM_HAS_TRACESWO)
+#define SLCAN_IF_NO	6
+#define NO_OF_IF 8
+#else
+#define SLCAN_IF_NO	5
+#define NO_OF_IF 7
+#endif
+#else
+#if defined(PLATFORM_HAS_TRACESWO)
+#define NO_OF_IF 6
+#else
+#define NO_OF_IF 5
+#endif
+
+#endif
 
 usbd_device * usbdev;
 
@@ -198,6 +218,70 @@ static const struct usb_endpoint_descriptor uart_data_endp[] = {{
 	.bInterval = 1,
 }};
 
+#if defined (PLATFORM_HAS_CAN)
+/* SLCAN interface */
+static const struct usb_endpoint_descriptor slcan_comm_endp[] = {{
+	.bLength = USB_DT_ENDPOINT_SIZE,
+	.bDescriptorType = USB_DT_ENDPOINT,
+	.bEndpointAddress = 0x87,
+	.bmAttributes = USB_ENDPOINT_ATTR_INTERRUPT,
+	.wMaxPacketSize = 16,
+	.bInterval = 255,
+}};
+
+static const struct usb_endpoint_descriptor slcan_data_endp[] = {{
+	.bLength = USB_DT_ENDPOINT_SIZE,
+	.bDescriptorType = USB_DT_ENDPOINT,
+	.bEndpointAddress = 0x06,
+	.bmAttributes = USB_ENDPOINT_ATTR_BULK,
+	.wMaxPacketSize = CDCACM_PACKET_SIZE,
+	.bInterval = 1,
+}, {
+	.bLength = USB_DT_ENDPOINT_SIZE,
+	.bDescriptorType = USB_DT_ENDPOINT,
+	.bEndpointAddress = 0x86,
+	.bmAttributes = USB_ENDPOINT_ATTR_BULK,
+	.wMaxPacketSize = CDCACM_PACKET_SIZE,
+	.bInterval = 1,
+}};
+
+static const struct {
+	struct usb_cdc_header_descriptor header;
+	struct usb_cdc_call_management_descriptor call_mgmt;
+	struct usb_cdc_acm_descriptor acm;
+	struct usb_cdc_union_descriptor cdc_union;
+} __attribute__((packed)) slcan_cdcacm_functional_descriptors = {
+	.header = {
+		.bFunctionLength = sizeof(struct usb_cdc_header_descriptor),
+		.bDescriptorType = CS_INTERFACE,
+		.bDescriptorSubtype = USB_CDC_TYPE_HEADER,
+		.bcdCDC = 0x0110,
+	},
+	.call_mgmt = {
+		.bFunctionLength =
+			sizeof(struct usb_cdc_call_management_descriptor),
+		.bDescriptorType = CS_INTERFACE,
+		.bDescriptorSubtype = USB_CDC_TYPE_CALL_MANAGEMENT,
+		.bmCapabilities = 0,
+		.bDataInterface = SLCAN_IF_NO+1,
+	},
+	.acm = {
+		.bFunctionLength = sizeof(struct usb_cdc_acm_descriptor),
+		.bDescriptorType = CS_INTERFACE,
+		.bDescriptorSubtype = USB_CDC_TYPE_ACM,
+		.bmCapabilities = 2, /* SET_LINE_CODING supported*/
+	},
+	.cdc_union = {
+		.bFunctionLength = sizeof(struct usb_cdc_union_descriptor),
+		.bDescriptorType = CS_INTERFACE,
+		.bDescriptorSubtype = USB_CDC_TYPE_UNION,
+		.bControlInterface = SLCAN_IF_NO,
+		.bSubordinateInterface0 = SLCAN_IF_NO+1,
+	 }
+};
+
+
+#endif
 static const struct {
 	struct usb_cdc_header_descriptor header;
 	struct usb_cdc_call_management_descriptor call_mgmt;
@@ -302,7 +386,7 @@ const struct usb_interface_descriptor dfu_iface = {
 static const struct usb_iface_assoc_descriptor dfu_assoc = {
 	.bLength = USB_DT_INTERFACE_ASSOCIATION_SIZE,
 	.bDescriptorType = USB_DT_INTERFACE_ASSOCIATION,
-	.bFirstInterface = 4,
+	.bFirstInterface = DFU_IF_NO,
 	.bInterfaceCount = 1,
 	.bFunctionClass = 0xFE,
 	.bFunctionSubClass = 1,
@@ -346,6 +430,49 @@ static const struct usb_iface_assoc_descriptor trace_assoc = {
 };
 #endif
 
+#if defined (PLATFORM_HAS_CAN)
+static const struct usb_interface_descriptor slcan_comm_iface[] = {{
+	.bLength = USB_DT_INTERFACE_SIZE,
+	.bDescriptorType = USB_DT_INTERFACE,
+	.bInterfaceNumber = SLCAN_IF_NO,
+	.bAlternateSetting = 0,
+	.bNumEndpoints = 1,
+	.bInterfaceClass = USB_CLASS_CDC,
+	.bInterfaceSubClass = USB_CDC_SUBCLASS_ACM,
+	.bInterfaceProtocol = USB_CDC_PROTOCOL_AT,
+	.iInterface = 0,
+
+	.endpoint = slcan_comm_endp,
+
+	.extra = &slcan_cdcacm_functional_descriptors,
+	.extralen = sizeof(slcan_cdcacm_functional_descriptors)
+}};
+
+static const struct usb_interface_descriptor slcan_data_iface[] = {{
+	.bLength = USB_DT_INTERFACE_SIZE,
+	.bDescriptorType = USB_DT_INTERFACE,
+	.bInterfaceNumber = SLCAN_IF_NO+1,
+	.bAlternateSetting = 0,
+	.bNumEndpoints = 2,
+	.bInterfaceClass = USB_CLASS_DATA,
+	.bInterfaceSubClass = 0,
+	.bInterfaceProtocol = 0,
+	.iInterface = 0,
+	.endpoint = slcan_data_endp,
+}};
+
+static const struct usb_iface_assoc_descriptor slcan_assoc = {
+	.bLength = USB_DT_INTERFACE_ASSOCIATION_SIZE,
+	.bDescriptorType = USB_DT_INTERFACE_ASSOCIATION,
+	.bFirstInterface = SLCAN_IF_NO,
+	.bInterfaceCount = 2,
+	.bFunctionClass = USB_CLASS_CDC,
+	.bFunctionSubClass = USB_CDC_SUBCLASS_ACM,
+	.bFunctionProtocol = USB_CDC_PROTOCOL_AT,
+	.iFunction = 0,
+};
+#endif
+
 static const struct usb_interface ifaces[] = {{
 	.num_altsetting = 1,
 	.iface_assoc = &gdb_assoc,
@@ -370,17 +497,22 @@ static const struct usb_interface ifaces[] = {{
 	.iface_assoc = &trace_assoc,
 	.altsetting = &trace_iface,
 #endif
+#if defined (PLATFORM_HAS_CAN)
+}, {
+	.num_altsetting = 1,
+	.iface_assoc = &slcan_assoc,
+	.altsetting = slcan_comm_iface,
+}, {
+	.num_altsetting = 1,
+	.altsetting = slcan_data_iface,
+#endif
 }};
 
 static const struct usb_config_descriptor config = {
 	.bLength = USB_DT_CONFIGURATION_SIZE,
 	.bDescriptorType = USB_DT_CONFIGURATION,
 	.wTotalLength = 0,
-#if defined(PLATFORM_HAS_TRACESWO)
-	.bNumInterfaces = 6,
-#else
-	.bNumInterfaces = 5,
-#endif
+	.bNumInterfaces = NO_OF_IF,
 	.bConfigurationValue = 1,
 	.iConfiguration = 0,
 	.bmAttributes = 0x80,
@@ -400,6 +532,9 @@ static const char *usb_strings[] = {
 	DFU_IDENT,
 #if defined(PLATFORM_HAS_TRACESWO)
 	"Black Magic Trace Capture",
+#endif
+#if defined (PLATFORM_HAS_CAN)
+	"Black Magic SLCAN Port",
 #endif
 };
 
@@ -429,25 +564,37 @@ static int cdcacm_control_request(usbd_device *dev,
 
 	switch(req->bRequest) {
 	case USB_CDC_REQ_SET_CONTROL_LINE_STATE:
-		/* Ignore if not for GDB interface */
-		if(req->wIndex != 0)
-			return 1;
-
-		cdcacm_gdb_dtr = req->wValue & 1;
-
+		switch (req->wIndex) {
+		case 0:
+			cdcacm_gdb_dtr = req->wValue & 1;
+			break;
+#if defined (PLATFORM_HAS_CAN)
+		case SLCAN_IF_NO:
+		//TODO slcan line control
+			break;
+#endif
+		default:
+			break;
+		}
 		return 1;
 	case USB_CDC_REQ_SET_LINE_CODING:
 		if(*len < sizeof(struct usb_cdc_line_coding))
 			return 0;
 
 		switch(req->wIndex) {
+#if defined(PLATFORM_HAS_CAN)
+		case SLCAN_IF_NO:
+			return 1; /* Ignore on SLCAN Port */
+#endif
 		case 2:
 			usbuart_set_line_coding((struct usb_cdc_line_coding*)*buf);
+			return 1;
 		case 0:
 			return 1; /* Ignore on GDB Port */
 		default:
 			return 0;
 		}
+		break;
 	case DFU_GETSTATUS:
 		if(req->wIndex == DFU_IF_NO) {
 			(*buf)[0] = DFU_STATUS_OK;
@@ -460,6 +607,7 @@ static int cdcacm_control_request(usbd_device *dev,
 
 			return 1;
 		}
+		break;
 	case DFU_DETACH:
 		if(req->wIndex == DFU_IF_NO) {
 			*complete = dfu_detach_complete;
@@ -503,7 +651,15 @@ static void cdcacm_set_config(usbd_device *dev, uint16_t wValue)
 	usbd_ep_setup(dev, 0x85, USB_ENDPOINT_ATTR_BULK,
 					64, trace_buf_drain);
 #endif
+#if defined(PLATFORM_HAS_CAN)
+	/* Serial interface */
+	usbd_ep_setup(dev, 0x06, USB_ENDPOINT_ATTR_BULK,
+					CDCACM_PACKET_SIZE, slcan_usb_out_cb);
+	usbd_ep_setup(dev, 0x86, USB_ENDPOINT_ATTR_BULK,
+					CDCACM_PACKET_SIZE, slcan_usb_in_cb);
+	usbd_ep_setup(dev, 0x87, USB_ENDPOINT_ATTR_INTERRUPT, 16, NULL);
 
+#endif
 	usbd_register_control_callback(dev,
 			USB_REQ_TYPE_CLASS | USB_REQ_TYPE_INTERFACE,
 			USB_REQ_TYPE_TYPE | USB_REQ_TYPE_RECIPIENT,
@@ -525,6 +681,10 @@ static void cdcacm_set_config(usbd_device *dev, uint16_t wValue)
 	usbd_ep_write_packet(dev, 0x82, buf, 10);
 	notif->wIndex = 2;
 	usbd_ep_write_packet(dev, 0x84, buf, 10);
+#if defined (PLATFORM_HAS_CAN)
+	notif->wIndex = SLCAN_IF_NO;
+	usbd_ep_write_packet(dev, 0x87, buf, 10);
+#endif
 }
 
 /* We need a special large control buffer for this device: */
