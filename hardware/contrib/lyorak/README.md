@@ -19,7 +19,9 @@ The board has been designed with the free DesignSpark PCB tool.
 
 ## JTAG pinout
 
-Pin 1 of the JTAG connectors are not marked on v1 of the board. See the picture of the board where red arrows are pointing to PIN 1 of the JTAG connectors.
+Pin 1 of the JTAG connectors are not marked on v1 of the board. 
+
+See the picture of the board where red arrows are pointing to PIN 1 of the JTAG connectors.
 Both debug connectors have the same pinout, only their size differs.
 
 Pinout in JTAG mode:
@@ -32,20 +34,20 @@ Pinout in SWD mode:
 
 Pin 1 is the closest to the MCU. Pin 6 is the closest to the JTAG connector.
 
-1 - GND
-2 - UART TX (SWCLK when debugging the Black Magic board itself)
-3 - UART RX (SWDIO when debugging the Black Magic board itself)
-4 - N.C.
-5 - VCC
-6 - N.C.
+1. GND
+1. UART TX (SWCLK when debugging the Black Magic board itself)
+1. UART RX (SWDIO when debugging the Black Magic board itself)
+1. N.C.
+1. VCC
+1. N.C.
 
 ## CAN connector pinout
 
 Pin 1 is closest to the MCU. Pin 3 is the closest to the JTAG connector.
 
-1 - CAN L
-2 - GND
-3 - CAN H
+1. CAN L
+1. GND
+1. CAN H
 
 ## Switches
 
