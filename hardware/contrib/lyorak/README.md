@@ -17,6 +17,48 @@ Due to the bigger components the size of the board is larger: 48mm x 30mm.
 
 The board has been designed with the free DesignSpark PCB tool.
 
+## JTAG pinout
+
+Pin 1 of the JTAG connectors are not marked on v1 of the board. See the picture of the board where red arrows are pointing to PIN 1 of the JTAG connectors.
+Both debug connectors have the same pinout, only their size differs.
+
+Pinout in JTAG mode:
+![Blackmagic lyorak JTAG pinout](jtag_jtag.jpg "JTAG pinout")
+
+Pinout in SWD mode:
+![Blackmagic lyorak SWD pinout](jtag_swd.jpg "SWD pinout")
+
+## UART connector pinout
+
+Pin 1 is the closest to the MCU. Pin 6 is the closest to the JTAG connector.
+
+1 - GND
+2 - UART TX (SWCLK when debugging the Black Magic board itself)
+3 - UART RX (SWDIO when debugging the Black Magic board itself)
+4 - N.C.
+5 - VCC
+6 - N.C.
+
+## CAN connector pinout
+
+Pin 1 is closest to the MCU. Pin 3 is the closest to the JTAG connector.
+
+1 - CAN L
+2 - GND
+3 - CAN H
+
+## Switches
+
+* Press SW1 while connecting the USB cable to force the MCU to UART boot loader mode.
+* Press SW2 while connecting the USB cable to acttivare the USB boot loader
+
+## LEDS
+
+* LED +3V is always ON when the board is powered up.
+* LED0 is blinking when there is communication on the AUX UART (/dev/ttyACM1)
+* LED1 indicated when the debug communication is active
+* LED2 is indicating error condition (by blinking error messages with morse code)
+
 ## Parts
 
 See the [Parts List](Parts.md)
