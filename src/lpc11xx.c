@@ -116,7 +116,7 @@ lpc11xx_probe(struct target_s *target)
 static void
 lpc11x_iap_call(struct target_s *target, struct flash_param *param, unsigned param_len)
 {
-	uint32_t regs[target->regs_size / 4];
+	uint32_t regs[target->regs_size / sizeof(uint32_t)];
 
 	/* fill out the remainder of the parameters and copy the structure to RAM */
 	param->opcodes[0] = 0xbe00;
@@ -216,7 +216,7 @@ lpc11xx_flash_write(struct target_s *target, uint32_t dest, const uint8_t *src, 
 			chunk_offset = 0;
 
 			/* if we are programming the vectors, calculate the magic number */
-			if (dest == 0) {
+			if (chunk * IAP_PGM_CHUNKSIZE == 0) {
 				uint32_t *w = (uint32_t *)(&flash_pgm.data[0]);
 				uint32_t sum = 0;
 
