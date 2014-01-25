@@ -36,7 +36,7 @@ Pinout in JTAG mode:
 Pinout in SWD mode:
 ![Blackmagic lyorak SWD pinout](jtag_swd.jpg "SWD pinout")
 
-In the simplest form you shall connect only GND, VCC, SWCLK, SWDIO in order to get a working the debug connection.
+In the simplest form you shall connect only GND, VCC, SWCLK, SWDIO in order to get a working debug connection.
 
 ## UART connector pinout
 
@@ -63,13 +63,13 @@ If you want to use external bus termination then you shall cut the pcb between t
 ## Switches
 
 * Press SW1 while connecting the USB cable to force the MCU to UART boot loader mode.
-* Press SW2 while connecting the USB cable to acttivare the USB boot loader
+* Press SW2 while connecting the USB cable to activate the USB boot loader
 
 ## LEDS
 
 * LED +3V is always ON when the board is powered up.
 * LED0 is blinking when there is communication on the AUX UART (/dev/ttyACM1)
-* LED1 indicated when the debug communication is active
+* LED1 is indicateing when the debug communication is active
 * LED2 is indicating error condition (by blinking error messages with morse code)
 
 ## Parts
