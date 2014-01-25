@@ -17,12 +17,18 @@ Due to the bigger components the size of the board is larger: 48mm x 30mm.
 
 The board has been designed with the free DesignSpark PCB tool.
 
+## Board description
+
+See the simplified hardware layout of the board below that shows the major components:
+
+![Blackmagic lyorak overview](blackmagic.png "Blackmagic lyorak overview")
+
 ## JTAG pinout
 
-Pin 1 of the JTAG connectors are not marked on v1 of the board. 
+The debug connectors are 10 pin (2x5) connectors. Both have the same pinout, only their size differs.
 
-See the picture of the board where red arrows are pointing to PIN 1 of the JTAG connectors.
-Both debug connectors have the same pinout, only their size differs.
+Pin 1 of the JTAG connectors are not marked on v1 of the board. 
+See the board overview above to identify the connector pins.
 
 Pinout in JTAG mode:
 ![Blackmagic lyorak JTAG pinout](jtag_jtag.jpg "JTAG pinout")
@@ -30,9 +36,11 @@ Pinout in JTAG mode:
 Pinout in SWD mode:
 ![Blackmagic lyorak SWD pinout](jtag_swd.jpg "SWD pinout")
 
+In the simplest form you shall connect only GND, VCC, SWCLK, SWDIO in order to get a working the debug connection.
+
 ## UART connector pinout
 
-Pin 1 is the closest to the MCU. Pin 6 is the closest to the JTAG connector.
+See the board overview above to identify the connector pins.
 
 1. GND
 1. UART TX (SWCLK when debugging the Black Magic board itself)
@@ -41,13 +49,16 @@ Pin 1 is the closest to the MCU. Pin 6 is the closest to the JTAG connector.
 1. VCC
 1. N.C.
 
-## CAN connector pinout
+If you want to debug the board itself, you shall power it up in DFU mode. Otherwise the UART function will not allow proper debug connection. 
 
-Pin 1 is closest to the MCU. Pin 3 is the closest to the JTAG connector.
+## CAN connector pinout
 
 1. CAN L
 1. GND
 1. CAN H
+
+There is a wire jumper JP1 just above the CAN connector. It is closed by default and enables a 120Ohm termination on CAN. 
+If you want to use external bus termination then you shall cut the pcb between the JP1 pads.
 
 ## Switches
 
