@@ -21,7 +21,7 @@ The board has been designed with the free DesignSpark PCB tool.
 
 See the simplified hardware layout of the board below that shows the major components:
 
-![Blackmagic lyorak overview](blackmagic.png "Blackmagic lyorak overview")
+![Blackmagic lyorak overview](blackmagic.jpeg "Blackmagic lyorak overview")
 
 ## JTAG pinout
 
