@@ -13,3 +13,4 @@ tags
 .gdbinit
 *.s#*
 *.b#*
+hardware/contrib/lyorak/Thumbs.db
