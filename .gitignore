@@ -1,7 +1,3 @@
-blackmagic
-*.bin
-*.hex
-blackmagic_dfu
 dfu_upgrade
 mapfile
 *.o
