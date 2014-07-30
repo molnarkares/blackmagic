@@ -143,7 +143,9 @@ int platform_init(void)
 
 	cdcacm_init();
 	usbuart_init();
-
+	if (setjmp(fatal_error_jmpbuf)) {
+	    return 0; // Do nothing on failure
+	}
 	jtag_scan(NULL);
 
 	return 0;
