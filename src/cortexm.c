@@ -384,6 +384,7 @@ cortexm_probe(struct target_s *target)
 	PROBE(lpc43xx_probe);
 	PROBE(sam3x_probe);
 	PROBE(nrf51_probe);
+	PROBE(samd20_probe);
 	PROBE(lmi_probe);
 #undef PROBE
 
@@ -692,6 +693,8 @@ static int cortexm_fault_unwind(struct target_s *target)
 		/* Read stack for pre-exception registers */
 		uint32_t sp = spsel ? regs[REG_PSP] : regs[REG_MSP];
 		target_mem_read_words(target, stack, sp, sizeof(stack));
+		if (target_check_error(target))
+			return 0;
 		regs[REG_LR] = stack[5];	/* restore LR to pre-exception state */
 		regs[REG_PC] = stack[6];	/* restore PC to pre-exception state */
 
