@@ -38,7 +38,7 @@
 #define INLINE_GPIO
 #define CDCACM_PACKET_SIZE 	64
 #define PLATFORM_HAS_TRACESWO
-#define PLATFORM_HAS_POWERSWITCH
+#define PLATFORM_HAS_POWER_SWITCH
 #define BOARD_IDENT             "Black Magic Probe"
 #define BOARD_IDENT_DFU		"Black Magic Probe (Upgrade)"
 #define BOARD_IDENT_UPD		"Black Magic Probe (DFU Upgrade)"
