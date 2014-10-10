@@ -83,9 +83,13 @@ if __name__ == "__main__":
 		if args.serial_target:
 			if man == "Black Sphere Technologies" and serial_no ==  args.serial_target: break
 			if man == "STMicroelectronics" and serial_no == args.serial_target: break
+			if man == " Lyorak Kaoa v2" and serial_no == args.serial_target: break
+
                 else:
-			if man == "Black Sphere Technologies": break
-			if man == "STMicroelectronics": break
+			break
+#			if man == "Black Sphere Technologies": break
+#			if man == "STMicroelectronics": break
+#			if man == " Lyorak Kaoa v2": break
 
 	print "Device %s: ID %04x:%04x %s - %s\n\tSerial %s" % (
                 dfudev.dev.filename, dfudev.dev.idVendor,
@@ -103,7 +107,7 @@ if __name__ == "__main__":
 		dfudev.detach()
 		print "Run again to upgrade firmware."
 		exit(0)
-	
+
 	dfudev.make_idle()
 
 	bin = open(args.progfile, "rb").read()
