@@ -56,6 +56,12 @@ target *target_attach(target *t, target_destroy_callback destroy_cb);
 #define target_mem_write_words(target, dest, src, len)	\
 	(target)->mem_write_words((target), (dest), (src), (len))
 
+#define target_mem_read_halfwords(target, dest, src, len)	\
+	(target)->mem_read_halfwords((target), (dest), (src), (len))
+
+#define target_mem_write_halfwords(target, dest, src, len)	\
+	(target)->mem_write_halfwords((target), (dest), (src), (len))
+
 #define target_mem_read_bytes(target, dest, src, len)	\
 	(target)->mem_read_bytes((target), (dest), (src), (len))
 
@@ -136,6 +142,11 @@ struct target_s {
 	int (*mem_write_words)(struct target_s *target, uint32_t dest,
 				const uint32_t *src, int len);
 
+	int (*mem_read_halfwords)(struct target_s *target, uint16_t *dest, uint32_t src,
+				int len);
+	int (*mem_write_halfwords)(struct target_s *target, uint32_t dest,
+				const uint16_t *src, int len);
+
 	int (*mem_read_bytes)(struct target_s *target, uint8_t *dest, uint32_t src,
 				int len);
 	int (*mem_write_bytes)(struct target_s *target, uint32_t dest,
@@ -214,6 +225,7 @@ bool lpc43xx_probe(struct target_s *target);
 bool sam3x_probe(struct target_s *target);
 bool nrf51_probe(struct target_s *target);
 bool samd20_probe(struct target_s *target);
+bool kinetis_probe(struct target_s *target);
 
 #endif
 

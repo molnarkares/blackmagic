@@ -101,6 +101,8 @@ gdb_main(void)
 			uint8_t mem[len];
 			if(((addr & 3) == 0) && ((len & 3) == 0))
 				target_mem_read_words(cur_target, (void*)mem, addr, len);
+			else if(((addr & 1) == 0) && ((len & 1) == 0))
+				target_mem_read_halfwords(cur_target, (void*)mem, addr, len);
 			else
 				target_mem_read_bytes(cur_target, (void*)mem, addr, len);
 			if(target_check_error(cur_target))
@@ -127,6 +129,8 @@ gdb_main(void)
 			unhexify(mem, pbuf + hex, len);
 			if(((addr & 3) == 0) && ((len & 3) == 0))
 				target_mem_write_words(cur_target, addr, (void*)mem, len);
+			else if(((addr & 1) == 0) && ((len & 1) == 0))
+				target_mem_write_halfwords(cur_target, addr, (void*)mem, len);
 			else
 				target_mem_write_bytes(cur_target, addr, (void*)mem, len);
 			if(target_check_error(cur_target))
@@ -217,7 +221,7 @@ gdb_main(void)
 			break;
 
 		case 0x04:
-                case 'D':	/* GDB 'detach' command. */
+		case 'D':	/* GDB 'detach' command. */
 			if(cur_target)
 				target_detach(cur_target);
 			last_target = cur_target;
@@ -402,8 +406,13 @@ handle_v_packet(char *packet, int plen)
 		} else if(last_target) {
 			cur_target = target_attach(last_target,
 						gdb_target_destroy_callback);
-			target_reset(cur_target);
-			gdb_putpacketz("T05");
+
+                        /* If we were able to attach to the target again */
+                        if (cur_target) {
+                        	target_reset(cur_target);
+                        	gdb_putpacketz("T05");
+                        } else	gdb_putpacketz("E01");
+
 		} else	gdb_putpacketz("E01");
 
 	} else if (sscanf(packet, "vFlashErase:%08lx,%08lx", &addr, &len) == 2) {

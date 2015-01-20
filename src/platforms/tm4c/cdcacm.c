@@ -31,6 +31,8 @@
 #include <libopencm3/usb/cdc.h>
 #include <libopencm3/cm3/scb.h>
 #include <libopencm3/usb/dfu.h>
+#include <libopencm3/lm4f/rcc.h>
+#include <libopencm3/lm4f/usb.h>
 #include <stdlib.h>
 
 #include "platform.h"
@@ -51,20 +53,20 @@ static int cdcacm_gdb_dtr = 1;
 
 
 static const struct usb_device_descriptor dev = {
-	.bLength = USB_DT_DEVICE_SIZE,
-	.bDescriptorType = USB_DT_DEVICE,
-	.bcdUSB = 0x0200,
-	.bDeviceClass = 0xEF,		/* Miscellaneous Device */
-	.bDeviceSubClass = 2,		/* Common Class */
-	.bDeviceProtocol = 1,		/* Interface Association */
-	.bMaxPacketSize0 = 64,
-	.idVendor = 0x1D50,
-	.idProduct = 0x6018,
-	.bcdDevice = 0x0100,
-	.iManufacturer = 1,
-	.iProduct = 2,
-	.iSerialNumber = 3,
-	.bNumConfigurations = 1,
+        .bLength = USB_DT_DEVICE_SIZE,
+        .bDescriptorType = USB_DT_DEVICE,
+        .bcdUSB = 0x0200,
+        .bDeviceClass = 0xEF,		/* Miscellaneous Device */
+        .bDeviceSubClass = 2,		/* Common Class */
+        .bDeviceProtocol = 1,		/* Interface Association */
+        .bMaxPacketSize0 = 64,
+        .idVendor = 0x1D50,
+        .idProduct = 0x6018,
+        .bcdDevice = 0x0100,
+        .iManufacturer = 1,
+        .iProduct = 2,
+        .iSerialNumber = 3,
+        .bNumConfigurations = 1,
 };
 
 /* This notification endpoint isn't implemented. According to CDC spec its
@@ -412,7 +414,7 @@ static void dfu_detach_complete(usbd_device *dev, struct usb_setup_data *req)
 	disconnect_usb();
 
 	/* Assert boot-request pin */
-	assert_boot_pin();
+        //assert_boot_pin();
 
 	/* Reset core to enter bootloader */
 	scb_reset_core();
@@ -485,22 +487,17 @@ static void cdcacm_set_config(usbd_device *dev, uint16_t wValue)
 	configured = wValue;
 
 	/* GDB interface */
-#ifdef STM32F4
 	usbd_ep_setup(dev, 0x01, USB_ENDPOINT_ATTR_BULK,
-	              CDCACM_PACKET_SIZE, gdb_usb_out_cb);
-#else
-	usbd_ep_setup(dev, 0x01, USB_ENDPOINT_ATTR_BULK,
-	              CDCACM_PACKET_SIZE, NULL);
-#endif
+					CDCACM_PACKET_SIZE, gdb_usb_out_cb);
 	usbd_ep_setup(dev, 0x81, USB_ENDPOINT_ATTR_BULK,
-	              CDCACM_PACKET_SIZE, NULL);
+					CDCACM_PACKET_SIZE, NULL);
 	usbd_ep_setup(dev, 0x82, USB_ENDPOINT_ATTR_INTERRUPT, 16, NULL);
 
 	/* Serial interface */
 	usbd_ep_setup(dev, 0x03, USB_ENDPOINT_ATTR_BULK,
-	              CDCACM_PACKET_SIZE, usbuart_usb_out_cb);
+					CDCACM_PACKET_SIZE, usbuart_usb_out_cb);
 	usbd_ep_setup(dev, 0x83, USB_ENDPOINT_ATTR_BULK,
-	              CDCACM_PACKET_SIZE, usbuart_usb_in_cb);
+					CDCACM_PACKET_SIZE, usbuart_usb_in_cb);
 	usbd_ep_setup(dev, 0x84, USB_ENDPOINT_ATTR_INTERRUPT, 16, NULL);
 
 #if defined(PLATFORM_HAS_TRACESWO)
@@ -537,9 +534,11 @@ uint8_t usbd_control_buffer[256];
 
 void cdcacm_init(void)
 {
-	void exti15_10_isr(void);
-
 	get_dev_unique_id(serial_no);
+
+	periph_clock_enable(RCC_GPIOD);
+	__asm__("nop"); __asm__("nop"); __asm__("nop");
+	gpio_mode_setup(GPIOD_BASE, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, GPIO4|GPIO5);
 
 	usbdev = usbd_init(&USB_DRIVER, &dev, &config, usb_strings,
 			    sizeof(usb_strings)/sizeof(char *),
@@ -547,6 +546,8 @@ void cdcacm_init(void)
 
 	usbd_register_set_config_callback(usbdev, cdcacm_set_config);
 
+	usb_enable_interrupts(USB_INT_RESET|USB_INT_DISCON|USB_INT_RESUME|USB_INT_SUSPEND,
+			0xff, 0xff);
 	nvic_set_priority(USB_IRQ, IRQ_PRI_USB);
 	nvic_enable_irq(USB_IRQ);
 	setup_vbus_irq();
@@ -559,23 +560,17 @@ void USB_ISR(void)
 
 static char *get_dev_unique_id(char *s)
 {
-#if defined(STM32F4)
-	volatile uint32_t *unique_id_p = (volatile uint32_t *)0x1FFF7A10;
-#else
-	volatile uint32_t *unique_id_p = (volatile uint32_t *)0x1FFFF7E8;
-#endif
-	uint32_t unique_id = *unique_id_p +
-			*(unique_id_p + 1) +
-			*(unique_id_p + 2);
-	int i;
+	/* FIXME: Store a unique serial number somewhere and retreive here */
+	uint32_t unique_id = 1;
+        int i;
 
-	/* Fetch serial number from chip's unique ID */
-	for(i = 0; i < 8; i++) {
-		s[7-i] = ((unique_id >> (4*i)) & 0xF) + '0';
-	}
-	for(i = 0; i < 8; i++)
-		if(s[i] > '9')
-			s[i] += 'A' - '9' - 1;
+        /* Fetch serial number from chip's unique ID */
+        for(i = 0; i < 8; i++) {
+                s[7-i] = ((unique_id >> (4*i)) & 0xF) + '0';
+        }
+        for(i = 0; i < 8; i++)
+                if(s[i] > '9')
+                        s[i] += 'A' - '9' - 1;
 	s[8] = 0;
 
 	return s;
